@@ -1,7 +1,7 @@
 # Hello
 
 Playing with Phoenix
-https://hexdocs.pm/phoenix/adding_pages.html
+https://hexdocs.pm/phoenix/plug.html#content
 
 To start your Phoenix server:
 
