@@ -1,7 +1,7 @@
 # Hello
 
-Playing with Phoenix
-https://hexdocs.pm/phoenix/plug.html#content
+Built Create/Delete API endpoints
+Next: Update and learning how to test properly
 
 To start your Phoenix server:
 

@@ -3,7 +3,6 @@ defmodule Hello.User do
   import Ecto.Changeset
   alias Hello.User
 
-
   schema "users" do
     field :email, :string
     field :first_name, :string
