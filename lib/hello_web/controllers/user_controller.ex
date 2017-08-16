@@ -1,9 +1,6 @@
-require IEx;
-
 defmodule HelloWeb.UserController do
   use HelloWeb, :controller
-  alias Hello.Repo
-  alias Hello.User
+  alias Hello.{Repo, User}
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -21,7 +18,8 @@ defmodule HelloWeb.UserController do
   end
 
   def create(conn, params) do
-    user = %User{email: params["email"],
+    user = %User{
+                 email: params["email"],
                  first_name: params["first_name"],
                  last_name: params["last_name"]
                 }
@@ -32,23 +30,23 @@ defmodule HelloWeb.UserController do
       user = Repo.get(User, user.id)
       conn
       |> put_status(201)
-      |> render "show.json", user: user
+      |> render("show.json", user: user)
     else
       conn
       |> put_status(406)
-      |> render "not_acceptable.json", user: nil
+      |> render("not_acceptable.json", user: nil)
     end
   end
 
-  def update(conn, params) do
+  # def update(conn, params) do
 
-  end
+  # end
 
   def delete(conn, params) do
     user = Repo.get(User, params["id"])
     Repo.delete user
     conn
     |> put_status(204)
-    |> render "show.json", user: user
+    |> render("show.json", user: user)
   end
 end
