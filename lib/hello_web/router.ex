@@ -24,6 +24,7 @@ defmodule HelloWeb.Router do
 
     get "/", PageController, :index
     get "/hello", HelloController, :index
+    resources "/posts", PostController
   end
 
 

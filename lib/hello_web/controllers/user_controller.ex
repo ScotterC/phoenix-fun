@@ -1,14 +1,16 @@
 defmodule HelloWeb.UserController do
   use HelloWeb, :controller
-  alias Hello.{Repo, User}
+
+  alias Hello.Users
+  alias Hello.Users.User
 
   def index(conn, _params) do
-    users = Repo.all(User)
+    users = Users.list_users()
     render conn, "index.json", users: users
   end
 
   def show(conn, params) do
-    user = Repo.get(User, params["id"])
+    user = Users.get_user!(params["id"])
 
     if user do
       render conn, "show.json", user: user
@@ -26,8 +28,8 @@ defmodule HelloWeb.UserController do
     changeset = User.changeset(user, %{})
 
     if changeset.valid? do
-      {:ok, user } = Repo.insert(user)
-      user = Repo.get(User, user.id)
+      Users.create_user(params)
+      user = Users.get_user!(user.id)
       conn
       |> put_status(201)
       |> render("show.json", user: user)
@@ -43,8 +45,8 @@ defmodule HelloWeb.UserController do
   # end
 
   def delete(conn, params) do
-    user = Repo.get(User, params["id"])
-    Repo.delete user
+    user = Users.get_user!(params["id"])
+    {:ok, _user} = Users.delete_user(user)
     conn
     |> put_status(204)
     |> render("show.json", user: user)

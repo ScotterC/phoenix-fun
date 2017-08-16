@@ -1,8 +1,9 @@
-defmodule Hello.User do
+defmodule Hello.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Hello.User
+  alias Hello.Users.User
 
+  @derive {Poison.Encoder, only: [:email, :first_name, :last_name]}
   schema "users" do
     field :email, :string
     field :first_name, :string
