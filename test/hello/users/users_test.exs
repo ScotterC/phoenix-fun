@@ -66,5 +66,10 @@ defmodule Hello.UsersTest do
       assert %Ecto.Changeset{} = Users.change_user(user)
     end
 
+    test "fields/1 returns a map of User fields" do
+      user = user_fixture()
+      assert @valid_attrs.email, Users.fields(user).email
+    end
+
   end
 end

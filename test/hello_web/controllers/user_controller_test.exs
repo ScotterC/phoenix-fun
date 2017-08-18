@@ -1,4 +1,3 @@
-require IEx
 defmodule HelloWeb.UserControllerTest do
   use HelloWeb.ConnCase
 
@@ -26,50 +25,73 @@ defmodule HelloWeb.UserControllerTest do
     end
   end
 
-  # describe "create user" do
+  describe "show" do
+    setup [:create_user]
 
-  # end
+    test "responds with user if it exists", %{conn: conn, user: user} do
+      conn = get conn, user_path(conn, :show, user), id: user.id
 
-  # describe "update user" do
+      body = json_response(conn, 200)
+      assert @create_attrs.email, body["data"]["email"]
+    end
 
-  # end
+  end
 
-  # describe "delete user" do
+  describe "create user" do
+    test "redirects to show when data is valid", %{conn: conn} do
+      conn = post conn, user_path(conn, :create), user: @create_attrs
 
-  # end
+      body = json_response(conn, 201)
+      assert @create_attrs.email, body["data"]["email"]
+    end
 
-  # test "index/2 responses with all Users" do
-  #   users =  [ User.changeset(%User{}, @valid_attrs),
-  #              User.changeset(%User{}, @valid_attrs) ]
+    test "responds with error when data is invalid", %{conn: conn} do
+      conn = post conn, user_path(conn, :create), user: @invalid_attrs
 
-  #   Enum.each(users, &Repo.insert!(&1))
+      body = json_response(conn, 406)
 
-  #   response = build_conn()
-  #   |> get(user_path(build_conn(), :index))
-  #   |> json_response(200)
+      assert body["message"] =~ "Not Acceptable"
+      assert body["errors"]["last_name"] == ["can't be blank"]
+    end
+  end
 
-  #   expected = %{
-  #     "data" => [
-  #       %{"email" => "foo@bar.com", "first_name" => "Foo", "last_name" => "Bar"},
-  #       %{"email" => "foo@bar.com", "first_name" => "Foo", "last_name" => "Bar"}
-  #     ]
-  #   }
+  describe "update user" do
+    setup [:create_user]
 
-  #   assert response == expected
+    test "responds 200 when data is valid", %{conn: conn, user: user} do
+      conn = put conn, user_path(conn, :update, user), user: @update_attrs
 
-  #   # assert %{"id" => _, "email" => "foo@bar.com", "first_name" => "Foo", "last_name" => "Bar"} == List.first(response["data"])
-  # end
+      body = json_response(conn, 200)
 
-  # describe "show/2" do
-  #   test "responds with user when found"
-  #   test "responds with 404 when user not found"
-  # end
+      assert @update_attrs.email, body["data"]["email"]
+    end
 
-  # describe "create/2" do
-  #   test "creates and responds with newly created users if attributes are valid"
-  #   test "returns a 406 not acceptable when attributes are not valid"
-  # end
+    test "responds with errors when data is invalid", %{conn: conn, user: user} do
+      conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
 
-  # test "delete/2 responds with 204 if user was deleted"
+      body = json_response(conn, 406)
 
+      assert body["message"] =~ "Not Acceptable"
+      assert body["errors"]["last_name"] == ["can't be blank"]
+    end
+  end
+
+  describe "delete user" do
+    setup [:create_user]
+
+    test "deletes chosen user", %{conn: conn, user: user} do
+      conn = delete conn, user_path(conn, :delete, user)
+      response(conn, 204)
+
+      # Show action
+      assert_error_sent 404, fn ->
+        get conn, user_path(conn, :show, user)
+      end
+    end
+  end
+
+  defp create_user(_) do
+    user = fixture(:user)
+    {:ok, user: user}
+  end
 end

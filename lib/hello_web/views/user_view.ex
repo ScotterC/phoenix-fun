@@ -1,3 +1,4 @@
+require IEx
 defmodule HelloWeb.UserView do
   use HelloWeb, :view
 
@@ -18,11 +19,11 @@ defmodule HelloWeb.UserView do
     }
   end
 
-  def render("not_found.json", %{user: nil}) do
-    %{message: "Not Found"}
+  def translate_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
   end
 
-  def render("not_acceptable.json", %{user: nil}) do
-    %{message: "Not Acceptable"}
+  def render("not_acceptable.json", %{changeset: changeset}) do
+    %{message: "Not Acceptable", errors: translate_errors(changeset)}
   end
 end
